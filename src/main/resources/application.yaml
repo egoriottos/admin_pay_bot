@@ -1,0 +1,19 @@
+server:
+  port: 80
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  application:
+    name: bot
+telegram:
+  free_channel: ${TG_FREE_CHANNEL_LINK}
+  bot:
+    token: ${BOT_TOKEN}
+    username: ${BOT_USERNAME}
