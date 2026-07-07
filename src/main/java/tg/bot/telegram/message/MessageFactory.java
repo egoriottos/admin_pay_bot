@@ -25,4 +25,8 @@ public class MessageFactory {
     public String tariffs(Language language) {
         return loc.get("tariffs.info", language);
     }
+
+    public String cornixRegistration(Language language) {
+        return loc.get("cornix.registration", language);
+    }
 }
