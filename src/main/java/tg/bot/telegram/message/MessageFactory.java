@@ -29,4 +29,8 @@ public class MessageFactory {
     public String cornixRegistration(Language language) {
         return loc.get("cornix.registration", language);
     }
+
+    public String cornixSettings(Language language) {
+        return loc.get("cornix.settings",language);
+    }
 }

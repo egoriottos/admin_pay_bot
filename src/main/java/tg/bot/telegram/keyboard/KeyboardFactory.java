@@ -1,5 +1,6 @@
 package tg.bot.telegram.keyboard;
 
+import tg.bot.channel.Channel;
 import tg.bot.localization.Language;
 import tg.bot.localization.LocalizationService;
 import tg.bot.tariff.Tariff;
@@ -100,6 +101,19 @@ public class KeyboardFactory {
     }
 
     /**
+     * Создает кнопки каналов в настройках корникса.
+     */
+    public InlineKeyboardMarkup channelsCornixSettings(Language language, List<Channel> channels) {
+        List<List<InlineKeyboardButton>> rows = channels.stream()
+                .map(channel -> row(
+                        channelButton(language, channel)
+                ))
+                .collect(Collectors.toList());
+        rows.add(row(button(language, "button.back", Callback.MAIN_MENU)));
+        return keyboard(rows);
+    }
+
+    /**
      * Создает кнопки тарифов.
      */
     public InlineKeyboardMarkup tariffs(Language language, List<Tariff> tariffs) {
@@ -112,11 +126,28 @@ public class KeyboardFactory {
         return keyboard(rows);
     }
 
+    private InlineKeyboardButton channelButton(Language language, Channel channel) {
+        return InlineKeyboardButton.builder()
+                .text(channelText(language,channel))
+                .callbackData("CORNIX_SETTINGS")
+                .build();
+    }
+
     private InlineKeyboardButton tariffButton(Language language, Tariff tariff) {
         return InlineKeyboardButton.builder()
                 .text(tariffText(language, tariff))
                 .callbackData("BUY_TARIFF_" + tariff.getId())
                 .build();
+    }
+
+    private String channelText(Language language, Channel channel) {
+        String key = switch (channel.getCode()) {
+            case "ELITE_TREND" -> "button.elite.trend";
+            case "CTI_PRO" -> "button.cti.pro";
+            case "TRADE_BE" -> "button.trade.b.and.e";
+            default -> throw new IllegalArgumentException("Unsupported channel code: " + channel.getCode());
+        };
+        return localizationService.get(key,language, channel.getName());
     }
 
     private String tariffText(Language language, Tariff tariff) {

@@ -11,5 +11,8 @@ public final class Callback {
     public static final String REGISTER_CORNIX = "REGISTER_CORNIX";
     public static final String CORNIX_SETTINGS = "CORNIX_SETTINGS";
     public static final String HELP = "HELP";
+    public static final String CTI_PRO_SETTINGS = "CTI_PRO_SETTINGS";
+    public static final String ELITE_TREND_SETTINGS = "ELITE_TREND_SETTINGS";
+    public static final String TRADE_BE_SETTINGS = "TRADE_BE_SETTINGS";
     public static final String SUBSCRIBE_CHANNEL = "SUBSCRIBE_CHANNEL";
 }
