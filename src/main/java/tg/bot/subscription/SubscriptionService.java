@@ -1,4 +1,3 @@
 package tg.bot.subscription;
 
-public class SubscriptionService {
-}
+public class SubscriptionService {}

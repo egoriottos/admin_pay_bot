@@ -9,8 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import tg.bot.localization.Language;
-import tg.bot.subscription.Subscription;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,9 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import tg.bot.localization.Language;
+import tg.bot.subscription.Subscription;
 
 @Entity
 @Table(name = "users")
@@ -31,24 +31,22 @@ import java.util.List;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class User {
-    @Id
-    @GeneratedValue
-    private Long id;
-    @Column(nullable = false, unique = true)
-    private Long telegramId;
+  @Id @GeneratedValue private Long id;
 
-    private String username;
+  @Column(nullable = false, unique = true)
+  private Long telegramId;
 
-    private String firstName;
+  private String username;
 
-    private String lastName;
+  private String firstName;
 
-    @Enumerated(EnumType.STRING)
-    private Language language;
+  private String lastName;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @Enumerated(EnumType.STRING)
+  private Language language;
 
-    @OneToMany(mappedBy = "user")
-    private List<Subscription> subscriptions = new ArrayList<>();
+  @CreatedDate private LocalDateTime createdAt;
+
+  @OneToMany(mappedBy = "user")
+  private List<Subscription> subscriptions = new ArrayList<>();
 }
