@@ -9,6 +9,7 @@ import tg.bot.telegram.command.StartCommand;
 @Component
 @RequiredArgsConstructor
 public class UpdateDispatcher {
+  private static final String START = "/start";
   private final StartCommand startCommand;
   private final CallbackHandler callbackHandler;
 
@@ -16,7 +17,7 @@ public class UpdateDispatcher {
     if (update.hasMessage() && update.getMessage().hasText()) {
       String text = update.getMessage().getText();
 
-      if (text.equals("/start")) {
+      if (text.equals(START)) {
         startCommand.execute(update.getMessage());
       }
 

@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.User;
 import tg.bot.user.UserService;
+import tg.bot.utils.CallbackData;
 import tg.bot.utils.CornixSettingUtils;
+import static tg.bot.utils.CallbackData.*;
 
 @Component("CORNIX_SETTINGS_CHANNEL")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class CornixSettingsChannelsCallback implements CallbackCommand {
   public void handle(CallbackQuery query) {
     User user = userService.findByTelegramId(query.getFrom().getId());
 
-    String channelCode = query.getData().replace("CORNIX_SETTINGS_", "");
+    String channelCode = query.getData().replace(CORNIX_SETTINGS_WITHOUT_CODE, "");
 
     List<InputStream> images = cornixSettingUtils.getImages(channelCode);
 

@@ -15,7 +15,11 @@ spring:
   application:
     name: bot
 telegram:
+  referral: ${TG_REFERRAL}
   free_channel: ${TG_FREE_CHANNEL_LINK}
   bot:
     token: ${BOT_TOKEN}
     username: ${BOT_USERNAME}
+chat:
+  chat-id: ${CHAT_ID}
+  public-chat-id: ${PUBLIC_CHAT_ID}

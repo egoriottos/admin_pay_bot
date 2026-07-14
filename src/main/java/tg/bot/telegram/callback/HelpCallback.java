@@ -8,6 +8,7 @@ import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.User;
 import tg.bot.user.UserService;
+import static tg.bot.utils.CallbackData.*;
 
 @Component("HELP")
 @RequiredArgsConstructor
@@ -25,6 +26,6 @@ public class HelpCallback implements CallbackCommand {
         query.getMessage().getChatId(),
         query.getMessage().getMessageId(),
         messageFactory.help(user.getLanguage()),
-        keyboardFactory.back(user.getLanguage(), "MAIN_MENU"));
+        keyboardFactory.back(user.getLanguage(), MAIN_MENU));
   }
 }

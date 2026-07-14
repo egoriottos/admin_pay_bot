@@ -8,6 +8,8 @@ import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.UserService;
+import tg.bot.utils.CallbackData;
+import static tg.bot.utils.CallbackData.*;
 
 @Component("LANG")
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class LanguageCallback implements CallbackCommand {
 
     Long telegramId = query.getFrom().getId();
 
-    Language language = Language.valueOf(query.getData().replace("LANG_", ""));
+    Language language = Language.valueOf(query.getData().replace(LANG_, ""));
 
     userService.setLanguage(telegramId, language);
     sender.editMessage(

@@ -33,4 +33,12 @@ public class MessageFactory {
   public String cornixSettings(Language language) {
     return loc.get("cornix.settings", language);
   }
+
+  public String referralSuccess(Language language) {
+    return loc.get("referral.success", language);
+  }
+
+  public String referralDenied(Language language) {
+    return loc.get("referral.denied", language);
+  }
 }

@@ -1,7 +1,7 @@
 package tg.bot.utils;
 
-public final class Callback {
-  private Callback() {}
+public final class CallbackData {
+  private CallbackData() {}
 
   public static final String ELITE_TREND = "ELITE_TREND";
   public static final String MAIN_MENU = "MAIN_MENU";
@@ -19,4 +19,11 @@ public final class Callback {
   public static final String CORNIX_SETTINGS_ELITE = "CORNIX_SETTINGS_ELITE";
   public static final String CORNIX_SETTINGS_CTI = "CORNIX_SETTINGS_CTI";
   public static final String CORNIX_SETTINGS_TRADE = "CORNIX_SETTINGS_TRADE";
+  public static final String BUY_TARIFF = "BUY_TARIFF_";
+  public static final String CORNIX_SETTINGS_WITHOUT_CODE = "CORNIX_SETTINGS_";
+  public static final String EN = "LANG_EN";
+  public static final String RU = "LANG_RU";
+  public static final String LANG_ = "LANG_";
+  public static final String LANG = "LANG";
+  public static final String CORNIX_SETTINGS_CHANNEL = "CORNIX_SETTINGS_CHANNEL";
 }

@@ -11,13 +11,16 @@ import tg.bot.channel.Channel;
 import tg.bot.localization.Language;
 import tg.bot.localization.LocalizationService;
 import tg.bot.tariff.Tariff;
-import tg.bot.utils.Callback;
+import static tg.bot.utils.CallbackData.*;
 
 @Component
 @RequiredArgsConstructor
 public class KeyboardFactory {
   @Value("${telegram.free_channel}")
   private String FREE_CHANNEL;
+
+  @Value("${telegram.referral}")
+  private String REFERRAL_CHANNEL;
 
   private final LocalizationService localizationService;
 
@@ -28,8 +31,8 @@ public class KeyboardFactory {
   public InlineKeyboardMarkup languageKeyboard() {
     return keyboard(
         List.of(
-            row(button(Language.RU, "button.language", "LANG_RU")),
-            row(button(Language.EN, "button.language", "LANG_EN"))));
+            row(button(Language.RU, "button.language", RU)),
+            row(button(Language.EN, "button.language", EN))));
   }
 
   /** Главное меню. */
@@ -39,14 +42,14 @@ public class KeyboardFactory {
 
   private List<List<InlineKeyboardButton>> mainMenuRows(Language language) {
     return List.of(
-        row(button(language, "button.elite.trend", Callback.ELITE_TREND)),
-        row(button(language, "button.cti.pro", Callback.CTI_PRO)),
-        row(button(language, "button.trade.b.and.e", Callback.TRADE_BE)),
-        row(button(language, "button.referral", Callback.REFERRAL)),
-        row(button(language, "button.my.subs", Callback.MY_SUBS)),
-        row(button(language, "button.registration.cornix", Callback.REGISTER_CORNIX)),
-        row(button(language, "button.cornix.settings", Callback.CORNIX_SETTINGS)),
-        row(button(language, "button.help", Callback.HELP)),
+        row(button(language, "button.elite.trend", ELITE_TREND)),
+        row(button(language, "button.cti.pro", CTI_PRO)),
+        row(button(language, "button.trade.b.and.e", TRADE_BE)),
+        row(button(language, "button.referral", REFERRAL)),
+        row(button(language, "button.my.subs", MY_SUBS)),
+        row(button(language, "button.registration.cornix", REGISTER_CORNIX)),
+        row(button(language, "button.cornix.settings", CORNIX_SETTINGS)),
+        row(button(language, "button.help", HELP)),
         row(urlButton(localizationService.get("button.cti_subscribe", language), FREE_CHANNEL)));
   }
 
@@ -85,7 +88,7 @@ public class KeyboardFactory {
         channels.stream()
             .map(channel -> row(channelButton(language, channel)))
             .collect(Collectors.toList());
-    rows.add(row(button(language, "button.back", Callback.MAIN_MENU)));
+    rows.add(row(button(language, "button.back", MAIN_MENU)));
     return keyboard(rows);
   }
 
@@ -95,30 +98,31 @@ public class KeyboardFactory {
         tariffs.stream()
             .map(tariff -> row(tariffButton(language, tariff)))
             .collect(Collectors.toList());
-    rows.add(row(button(language, "button.back", Callback.MAIN_MENU)));
+    rows.add(row(button(language, "button.back", MAIN_MENU)));
     return keyboard(rows);
   }
 
   private InlineKeyboardButton channelButton(Language language, Channel channel) {
     return InlineKeyboardButton.builder()
         .text(channelText(language, channel))
-        .callbackData("CORNIX_SETTINGS_" + channel.getCode())
+        .callbackData(CORNIX_SETTINGS_WITHOUT_CODE + channel.getCode())
         .build();
   }
 
   private InlineKeyboardButton tariffButton(Language language, Tariff tariff) {
-    return InlineKeyboardButton.builder()
-        .text(tariffText(language, tariff))
-        .callbackData("BUY_TARIFF_" + tariff.getId())
-        .build();
+    InlineKeyboardButton build = InlineKeyboardButton.builder()
+            .text(tariffText(language, tariff))
+            .callbackData(BUY_TARIFF + tariff.getId())
+            .build();
+    return build;
   }
 
   private String channelText(Language language, Channel channel) {
     String key =
         switch (channel.getCode()) {
-          case "ELITE_TREND" -> "button.elite.trend";
-          case "CTI_PRO" -> "button.cti.pro";
-          case "TRADE_BE" -> "button.trade.b.and.e";
+          case ELITE_TREND -> "button.elite.trend";
+          case CTI_PRO -> "button.cti.pro";
+          case TRADE_BE -> "button.trade.b.and.e";
           default ->
               throw new IllegalArgumentException("Unsupported channel code: " + channel.getCode());
         };
@@ -137,5 +141,25 @@ public class KeyboardFactory {
                   "Unsupported tariff period: " + tariff.getMonths());
         };
     return localizationService.get(key, language, tariff.getPrice());
+  }
+
+  public InlineKeyboardMarkup referralSuccess(Language language) {
+    return keyboard(List.of(
+            row(urlButton(
+                    localizationService.get("button.go", language),
+                    REFERRAL_CHANNEL
+            )),
+            row(button(language, "button.back", MAIN_MENU))
+    ));
+  }
+
+  public InlineKeyboardMarkup referralDenied(Language language) {
+    return keyboard(List.of(
+            row(urlButton(
+                    localizationService.get("button.free.channel", language),
+                    FREE_CHANNEL
+            )),
+            row(button(language, "button.back", MAIN_MENU))
+    ));
   }
 }

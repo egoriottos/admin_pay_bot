@@ -19,6 +19,7 @@ import tg.bot.telegram.client.TelegramBotClient;
 @Component
 @RequiredArgsConstructor
 public class TelegramSender {
+  private static final String MARKDOWN = "Markdown";
   private final TelegramBotClient telegramClient;
 
   public void sendMessage(Long chatId, String text, InlineKeyboardMarkup keyboard) {
@@ -44,7 +45,7 @@ public class TelegramSender {
     edit.setMessageId(messageId);
     edit.setText(text);
     edit.setReplyMarkup(keyboard);
-    edit.setParseMode("Markdown");
+    edit.setParseMode(MARKDOWN);
     try {
       telegramClient.execute(edit);
     } catch (TelegramApiException e) {

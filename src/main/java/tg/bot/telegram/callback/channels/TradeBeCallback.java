@@ -12,7 +12,7 @@ import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.User;
 import tg.bot.user.UserService;
-import tg.bot.utils.Callback;
+import tg.bot.utils.CallbackData;
 
 @Component("TRADE_BE")
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class TradeBeCallback implements CallbackCommand {
   @Override
   public void handle(CallbackQuery query) {
     User user = userService.findByTelegramId(query.getFrom().getId());
-    List<Tariff> tariffs = tariffService.getByChannelCode(Callback.TRADE_BE);
+    List<Tariff> tariffs = tariffService.getByChannelCode(CallbackData.TRADE_BE);
     sender.editMessage(
         query.getMessage().getChatId(),
         query.getMessage().getMessageId(),
