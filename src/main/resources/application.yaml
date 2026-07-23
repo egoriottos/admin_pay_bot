@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
 spring:
   config:
     import: file:.env[.properties]
@@ -23,3 +23,8 @@ telegram:
 chat:
   chat-id: ${CHAT_ID}
   public-chat-id: ${PUBLIC_CHAT_ID}
+
+trybit:
+  secret-key: ${TRY_BIT_SECRET}
+  api-token: ${TRY_BIT_API_TOKEN}
+  shop-id: ${TRY_BIT_SHOP_ID}

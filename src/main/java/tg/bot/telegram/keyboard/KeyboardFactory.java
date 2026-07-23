@@ -162,4 +162,16 @@ public class KeyboardFactory {
             row(button(language, "button.back", MAIN_MENU))
     ));
   }
+
+  public InlineKeyboardMarkup payInvoice(Language language, String payUrl) {
+    return keyboard(List.of(
+            row(urlButton(localizationService.get("button.pay", language), payUrl)),
+            row(button(language, "button.back", MAIN_MENU))));
+  }
+
+  /** Кнопка перехода в приватный канал после успешной оплаты. */
+  public InlineKeyboardMarkup channelAccess(Language language, String inviteLink) {
+    return keyboard(List.of(
+            row(urlButton(localizationService.get("button.go", language), inviteLink))));
+  }
 }

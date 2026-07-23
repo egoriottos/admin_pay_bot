@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import tg.bot.telegram.BotService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class TelegramConfiguration {
@@ -13,5 +14,10 @@ public class TelegramConfiguration {
     TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
     api.registerBot(botService);
     return api;
+  }
+
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
   }
 }

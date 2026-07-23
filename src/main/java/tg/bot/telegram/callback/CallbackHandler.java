@@ -28,5 +28,10 @@ public class CallbackHandler {
     if (callback != null) {
       callback.handle(query);
     }
+
+    if (data.startsWith(BUY_TARIFF)) {
+      callbacks.get("BUY_TARIFF_HANDLER").handle(query);
+      return;
+    }
   }
 }

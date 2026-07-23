@@ -47,6 +47,12 @@ public class Payment {
   @JoinColumn(name = "subscription_id")
   private Subscription subscription;
 
+  @Column(name = "chat_id")
+  private Long chatId;
+
+  @Column(name = "message_id")
+  private Integer messageId;
+
   @Column(nullable = false)
   private BigDecimal amount;
 

@@ -4,10 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tg.bot.localization.Language;
 import tg.bot.localization.LocalizationService;
+import tg.bot.subscription.Subscription;
+import tg.bot.tariff.Tariff;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class MessageFactory {
+  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private final LocalizationService loc;
 
   public String chooseLanguage() {
@@ -41,4 +47,28 @@ public class MessageFactory {
   public String referralDenied(Language language) {
     return loc.get("referral.denied", language);
   }
+
+  public String payInvoice(Language language, Tariff tariff) {
+    return loc.get("button.payment_instruction",language, tariff);
+  }
+
+  public String paymentSuccess(Language language, String channelName) {
+    return loc.get("payment.success", language, channelName);
+  }
+
+  public String mySubscriptions(Language language, List<Subscription> subscriptions) {
+
+    if (subscriptions.isEmpty()) {
+      return loc.get("my.subscriptions.empty", language);
+    }
+
+    return subscriptions.stream()
+            .map(subscription -> loc.get(
+                    "my.subscription",
+                    language,
+                    subscription.getChannel().getName(),
+                    subscription.getExpireDate().format(DATE_FORMAT)
+            )).collect(Collectors.joining("\n\n"));
+  }
+
 }
