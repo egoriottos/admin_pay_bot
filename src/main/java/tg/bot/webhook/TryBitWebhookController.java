@@ -1,194 +1,193 @@
 package tg.bot.webhook;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.Base64;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
+import org.telegram.telegrambots.meta.api.objects.ChatInviteLink;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.bot.payment.Payment;
 import tg.bot.payment.PaymentConfirmationService;
 import tg.bot.payment.PaymentRepository;
 import tg.bot.payment.PaymentStatus;
-import tg.bot.subscription.Subscription;
 import tg.bot.subscription.SubscriptionRepository;
-import tg.bot.subscription.SubscriptionStatus;
-import tg.bot.tariff.Tariff;
 import tg.bot.tariff.TariffRepository;
 import tg.bot.telegram.client.TelegramBotClient;
 import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
-import org.telegram.telegrambots.meta.api.objects.ChatInviteLink;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.HexFormat;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class TryBitWebhookController {
-    @Value("${trybit.secret-key}")
-    private String secretKey;
+  @Value("${trybit.secret-key}")
+  private String secretKey;
 
-    private final PaymentRepository paymentRepository;
-    private final SubscriptionRepository subscriptionRepository;
-    private final TariffRepository tariffRepository;
-    private final MessageFactory messageFactory;
-    private final TelegramSender sender;
-    private final ObjectMapper objectMapper;
-    private final TelegramBotClient telegramClient;
-    private final PaymentConfirmationService paymentConfirmationService;
-    private final KeyboardFactory keyboardFactory;
+  private final PaymentRepository paymentRepository;
+  private final SubscriptionRepository subscriptionRepository;
+  private final TariffRepository tariffRepository;
+  private final MessageFactory messageFactory;
+  private final TelegramSender sender;
+  private final ObjectMapper objectMapper;
+  private final TelegramBotClient telegramClient;
+  private final PaymentConfirmationService paymentConfirmationService;
+  private final KeyboardFactory keyboardFactory;
 
-    // URL этого эндпоинта нужно указать в настройках проекта Trybit как "Notification URL",
-    // формат постбэка выбрать JSON.
-    @PostMapping("/trybit/webhook")
-    public ResponseEntity<Void> handle(@RequestBody String rawBody) {
-        log.info("Trybit webhook received: {}", rawBody);
-        try {
-            return processWebhook(rawBody);
-        } catch (Exception e) {
-            log.error("Ошибка обработки Trybit webhook: {}", rawBody, e);
-            return ResponseEntity.ok().build();
-        }
+  // URL этого эндпоинта нужно указать в настройках проекта Trybit как "Notification URL",
+  // формат постбэка выбрать JSON.
+  @PostMapping("/trybit/webhook")
+  public ResponseEntity<Void> handle(@RequestBody String rawBody) {
+    log.info("Trybit webhook received: {}", rawBody);
+    try {
+      return processWebhook(rawBody);
+    } catch (Exception e) {
+      log.error("Ошибка обработки Trybit webhook: {}", rawBody, e);
+      return ResponseEntity.ok().build();
+    }
+  }
+
+  private ResponseEntity<Void> processWebhook(String rawBody) throws Exception {
+    JsonNode json = objectMapper.readTree(rawBody);
+
+    String status = textOrNull(json, "status");
+    String invoiceId = textOrNull(json, "invoice_id");
+    String token = textOrNull(json, "token");
+
+    if (!"success".equalsIgnoreCase(status)) {
+      log.info("Webhook status != success ({}), invoiceId={}, игнорируем", status, invoiceId);
+      return ResponseEntity.ok().build();
     }
 
-    private ResponseEntity<Void> processWebhook(String rawBody) throws Exception {
-        JsonNode json = objectMapper.readTree(rawBody);
-
-        String status = textOrNull(json, "status");
-        String invoiceId = textOrNull(json, "invoice_id");
-        String token = textOrNull(json, "token");
-
-        if (!"success".equalsIgnoreCase(status)) {
-            log.info("Webhook status != success ({}), invoiceId={}, игнорируем", status, invoiceId);
-            return ResponseEntity.ok().build();
-        }
-
-        if (!isValidToken(token)) {
-            log.warn("Невалидная подпись токена для invoiceId={}", invoiceId);
-            return ResponseEntity.status(403).build();
-        }
-
-        Payment payment = paymentRepository.findByInvoiceId(invoiceId)
-                .orElseThrow(() -> new IllegalStateException("Unknown invoice: " + invoiceId));
-
-        if (payment.getStatus() == PaymentStatus.PAID) {
-            log.info("invoiceId={} уже был обработан ранее, пропускаем", invoiceId);
-            return ResponseEntity.ok().build();
-        }
-
-        JsonNode invoiceInfo = json.get("invoice_info");
-        String innerStatus = invoiceInfo != null ? textOrNull(invoiceInfo, "status") : null;
-        if (innerStatus != null
-            && !"paid".equalsIgnoreCase(innerStatus)
-            && !"overpaid".equalsIgnoreCase(innerStatus)) {
-            log.info("invoiceId={}: invoice_info.status={} - не полная оплата, ждём следующий постбэк", invoiceId, innerStatus);
-            return ResponseEntity.ok().build();
-        }
-
-        PaymentConfirmationService.PaidResult result = paymentConfirmationService.confirm(payment);
-
-        try {
-            String inviteLink = createTempInvite(result.channelChatId());
-            sender.editMessage(
-                    result.chatId(),
-                    result.messageId(),
-                    messageFactory.paymentSuccess(result.language(), result.channelName()),
-                    keyboardFactory.channelAccess(result.language(), inviteLink));
-            log.info("invoiceId={}: инвайт создан и сообщение обновлено успешно", invoiceId);
-        } catch (TelegramApiException e) {
-            log.error("invoiceId={}: не удалось создать инвайт или обновить сообщение, chatId={}",
-                    invoiceId, result.channelChatId(), e);
-            try {
-                sender.sendMessage(
-                        result.telegramUserId(),
-                        "Оплата подтверждена, но не удалось выдать ссылку на канал автоматически. "
-                        + "Напишите в поддержку — мы выдадим доступ вручную.",
-                        null);
-            } catch (Exception inner) {
-                log.error("invoiceId={}: даже фолбэк-сообщение не отправилось", invoiceId, inner);
-            }
-        }
-
-        return ResponseEntity.ok().build();
+    if (!isValidToken(token)) {
+      log.warn("Невалидная подпись токена для invoiceId={}", invoiceId);
+      return ResponseEntity.status(403).build();
     }
 
-    private String textOrNull(JsonNode node, String field) {
-        JsonNode v = node.get(field);
-        return (v == null || v.isNull()) ? null : v.asText();
+    Payment payment =
+        paymentRepository
+            .findByInvoiceId(invoiceId)
+            .orElseThrow(() -> new IllegalStateException("Unknown invoice: " + invoiceId));
+
+    if (payment.getStatus() == PaymentStatus.PAID) {
+      log.info("invoiceId={} уже был обработан ранее, пропускаем", invoiceId);
+      return ResponseEntity.ok().build();
     }
 
-    private String createTempInvite(String chatId) throws TelegramApiException {
-        CreateChatInviteLink createInvite = new CreateChatInviteLink();
-        createInvite.setChatId(chatId);
-        createInvite.setMemberLimit(1);
-        createInvite.setExpireDate((int) (System.currentTimeMillis() / 1000 + 3600));
-        ChatInviteLink link = telegramClient.execute(createInvite);
-        return link.getInviteLink();
+    JsonNode invoiceInfo = json.get("invoice_info");
+    String innerStatus = invoiceInfo != null ? textOrNull(invoiceInfo, "status") : null;
+    if (innerStatus != null
+        && !"paid".equalsIgnoreCase(innerStatus)
+        && !"overpaid".equalsIgnoreCase(innerStatus)) {
+      log.info(
+          "invoiceId={}: invoice_info.status={} - не полная оплата, ждём следующий постбэк",
+          invoiceId,
+          innerStatus);
+      return ResponseEntity.ok().build();
     }
 
-    /**
-     * Trybit подписывает постбэк JWT (HS256). Подпись - HMAC-SHA256 от
-     * "header.payload", ключ - SECRET KEY проекта. Сторонняя JWT-библиотека
-     * не нужна, делаем всё вручную.
-     */
-    private boolean isValidToken(String token) {
-        if (token == null || token.isBlank()) {
-            return false;
+    PaymentConfirmationService.PaidResult result = paymentConfirmationService.confirm(payment);
+
+    try {
+      String inviteLink = createTempInvite(result.channelChatId());
+      sender.editMessage(
+          result.chatId(),
+          result.messageId(),
+          messageFactory.paymentSuccess(result.language(), result.channelName()),
+          keyboardFactory.channelAccess(result.language(), inviteLink));
+      log.info("invoiceId={}: инвайт создан и сообщение обновлено успешно", invoiceId);
+    } catch (TelegramApiException e) {
+      log.error(
+          "invoiceId={}: не удалось создать инвайт или обновить сообщение, chatId={}",
+          invoiceId,
+          result.channelChatId(),
+          e);
+      try {
+        sender.sendMessage(
+            result.telegramUserId(),
+            "Оплата подтверждена, но не удалось выдать ссылку на канал автоматически. "
+                + "Напишите в поддержку — мы выдадим доступ вручную.",
+            null);
+      } catch (Exception inner) {
+        log.error("invoiceId={}: даже фолбэк-сообщение не отправилось", invoiceId, inner);
+      }
+    }
+
+    return ResponseEntity.ok().build();
+  }
+
+  private String textOrNull(JsonNode node, String field) {
+    JsonNode v = node.get(field);
+    return (v == null || v.isNull()) ? null : v.asText();
+  }
+
+  private String createTempInvite(String chatId) throws TelegramApiException {
+    CreateChatInviteLink createInvite = new CreateChatInviteLink();
+    createInvite.setChatId(chatId);
+    createInvite.setMemberLimit(1);
+    createInvite.setExpireDate((int) (System.currentTimeMillis() / 1000 + 3600));
+    ChatInviteLink link = telegramClient.execute(createInvite);
+    return link.getInviteLink();
+  }
+
+  /**
+   * Trybit подписывает постбэк JWT (HS256). Подпись - HMAC-SHA256 от "header.payload", ключ -
+   * SECRET KEY проекта. Сторонняя JWT-библиотека не нужна, делаем всё вручную.
+   */
+  private boolean isValidToken(String token) {
+    if (token == null || token.isBlank()) {
+      return false;
+    }
+    String[] parts = token.split("\\.");
+    if (parts.length != 3) {
+      return false;
+    }
+    try {
+      byte[] expectedSig = hmacSha256(parts[0] + "." + parts[1], secretKey);
+      byte[] actualSig = base64UrlDecode(parts[2]);
+      if (!MessageDigest.isEqual(expectedSig, actualSig)) {
+        return false;
+      }
+
+      String payloadJson = new String(base64UrlDecode(parts[1]), StandardCharsets.UTF_8);
+      JsonNode payload = objectMapper.readTree(payloadJson);
+      if (payload.has("exp")) {
+        long exp = payload.get("exp").asLong();
+        if (Instant.now().getEpochSecond() >= exp) {
+          return false;
         }
-        String[] parts = token.split("\\.");
-        if (parts.length != 3) {
-            return false;
-        }
-        try {
-            byte[] expectedSig = hmacSha256(parts[0] + "." + parts[1], secretKey);
-            byte[] actualSig = base64UrlDecode(parts[2]);
-            if (!MessageDigest.isEqual(expectedSig, actualSig)) {
-                return false;
-            }
-
-            String payloadJson = new String(base64UrlDecode(parts[1]), StandardCharsets.UTF_8);
-            JsonNode payload = objectMapper.readTree(payloadJson);
-            if (payload.has("exp")) {
-                long exp = payload.get("exp").asLong();
-                if (Instant.now().getEpochSecond() >= exp) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            log.error("Ошибка валидации токена постбэка", e);
-            return false;
-        }
+      }
+      return true;
+    } catch (Exception e) {
+      log.error("Ошибка валидации токена постбэка", e);
+      return false;
     }
+  }
 
-    private byte[] hmacSha256(String data, String secret) throws Exception {
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-        return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-    }
+  private byte[] hmacSha256(String data, String secret) throws Exception {
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+    return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+  }
 
-    private byte[] base64UrlDecode(String s) {
-        String padded = s;
-        int mod = s.length() % 4;
-        if (mod != 0) {
-            padded += "=".repeat(4 - mod);
-        }
-        return Base64.getUrlDecoder().decode(padded);
+  private byte[] base64UrlDecode(String s) {
+    String padded = s;
+    int mod = s.length() % 4;
+    if (mod != 0) {
+      padded += "=".repeat(4 - mod);
     }
+    return Base64.getUrlDecoder().decode(padded);
+  }
 }

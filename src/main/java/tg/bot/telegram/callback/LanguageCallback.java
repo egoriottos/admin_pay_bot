@@ -1,5 +1,7 @@
 package tg.bot.telegram.callback;
 
+import static tg.bot.utils.CallbackData.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -8,8 +10,6 @@ import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.UserService;
-import tg.bot.utils.CallbackData;
-import static tg.bot.utils.CallbackData.*;
 
 @Component("LANG")
 @RequiredArgsConstructor

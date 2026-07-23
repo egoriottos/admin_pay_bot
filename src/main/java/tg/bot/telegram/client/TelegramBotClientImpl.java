@@ -19,7 +19,8 @@ public class TelegramBotClientImpl implements TelegramBotClient {
   private TelegramLongPollingBot bot;
 
   @Override
-  public <T extends Serializable, Method extends BotApiMethod<T>> void execute(Method method) throws TelegramApiException {
+  public <T extends Serializable, Method extends BotApiMethod<T>> void execute(Method method)
+      throws TelegramApiException {
     bot.execute(method);
   }
 

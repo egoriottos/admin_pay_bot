@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TariffRepository extends JpaRepository<Tariff, Long> {
   List<Tariff> findByChannelCode(String code);
-  @Query("""
+
+  @Query(
+      """
         select t
         from Tariff t
         join fetch t.channel

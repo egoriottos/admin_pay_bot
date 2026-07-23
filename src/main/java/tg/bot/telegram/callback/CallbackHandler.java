@@ -1,10 +1,10 @@
 package tg.bot.telegram.callback;
 
-import tg.bot.utils.CallbackData;
+import static tg.bot.utils.CallbackData.*;
+
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import static tg.bot.utils.CallbackData.*;
 
 @Component
 public class CallbackHandler {

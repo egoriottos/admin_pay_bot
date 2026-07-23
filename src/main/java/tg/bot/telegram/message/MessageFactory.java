@@ -1,14 +1,14 @@
 package tg.bot.telegram.message;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tg.bot.localization.Language;
 import tg.bot.localization.LocalizationService;
 import tg.bot.subscription.Subscription;
 import tg.bot.tariff.Tariff;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -49,7 +49,7 @@ public class MessageFactory {
   }
 
   public String payInvoice(Language language, Tariff tariff) {
-    return loc.get("button.payment_instruction",language, tariff);
+    return loc.get("button.payment_instruction", language, tariff);
   }
 
   public String paymentSuccess(Language language, String channelName) {
@@ -63,12 +63,13 @@ public class MessageFactory {
     }
 
     return subscriptions.stream()
-            .map(subscription -> loc.get(
+        .map(
+            subscription ->
+                loc.get(
                     "my.subscription",
                     language,
                     subscription.getChannel().getName(),
-                    subscription.getExpireDate().format(DATE_FORMAT)
-            )).collect(Collectors.joining("\n\n"));
+                    subscription.getExpireDate().format(DATE_FORMAT)))
+        .collect(Collectors.joining("\n\n"));
   }
-
 }

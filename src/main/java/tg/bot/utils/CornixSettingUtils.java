@@ -1,18 +1,19 @@
 package tg.bot.utils;
 
+import static tg.bot.utils.CallbackData.*;
+
 import java.io.InputStream;
 import java.util.List;
 import org.springframework.stereotype.Component;
-import static tg.bot.utils.CallbackData.*;
 
 @Component
 public class CornixSettingUtils {
   public List<InputStream> getImages(String channelCode) {
     String folder =
         switch (channelCode) {
-            case ELITE_TREND -> "elite_trend";
-            case CTI_PRO -> "cti_pro";
-            case TRADE_BE -> "trade_be";
+          case ELITE_TREND -> "elite_trend";
+          case CTI_PRO -> "cti_pro";
+          case TRADE_BE -> "trade_be";
           default -> throw new IllegalArgumentException("Unknown channel:" + channelCode);
         };
     return List.of(

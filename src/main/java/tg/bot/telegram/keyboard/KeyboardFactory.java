@@ -1,5 +1,7 @@
 package tg.bot.telegram.keyboard;
 
+import static tg.bot.utils.CallbackData.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,6 @@ import tg.bot.channel.Channel;
 import tg.bot.localization.Language;
 import tg.bot.localization.LocalizationService;
 import tg.bot.tariff.Tariff;
-import static tg.bot.utils.CallbackData.*;
 
 @Component
 @RequiredArgsConstructor
@@ -110,7 +111,8 @@ public class KeyboardFactory {
   }
 
   private InlineKeyboardButton tariffButton(Language language, Tariff tariff) {
-    InlineKeyboardButton build = InlineKeyboardButton.builder()
+    InlineKeyboardButton build =
+        InlineKeyboardButton.builder()
             .text(tariffText(language, tariff))
             .callbackData(BUY_TARIFF + tariff.getId())
             .build();
@@ -144,34 +146,29 @@ public class KeyboardFactory {
   }
 
   public InlineKeyboardMarkup referralSuccess(Language language) {
-    return keyboard(List.of(
-            row(urlButton(
-                    localizationService.get("button.go", language),
-                    REFERRAL_CHANNEL
-            )),
-            row(button(language, "button.back", MAIN_MENU))
-    ));
+    return keyboard(
+        List.of(
+            row(urlButton(localizationService.get("button.go", language), REFERRAL_CHANNEL)),
+            row(button(language, "button.back", MAIN_MENU))));
   }
 
   public InlineKeyboardMarkup referralDenied(Language language) {
-    return keyboard(List.of(
-            row(urlButton(
-                    localizationService.get("button.free.channel", language),
-                    FREE_CHANNEL
-            )),
-            row(button(language, "button.back", MAIN_MENU))
-    ));
+    return keyboard(
+        List.of(
+            row(urlButton(localizationService.get("button.free.channel", language), FREE_CHANNEL)),
+            row(button(language, "button.back", MAIN_MENU))));
   }
 
   public InlineKeyboardMarkup payInvoice(Language language, String payUrl) {
-    return keyboard(List.of(
+    return keyboard(
+        List.of(
             row(urlButton(localizationService.get("button.pay", language), payUrl)),
             row(button(language, "button.back", MAIN_MENU))));
   }
 
   /** Кнопка перехода в приватный канал после успешной оплаты. */
   public InlineKeyboardMarkup channelAccess(Language language, String inviteLink) {
-    return keyboard(List.of(
-            row(urlButton(localizationService.get("button.go", language), inviteLink))));
+    return keyboard(
+        List.of(row(urlButton(localizationService.get("button.go", language), inviteLink))));
   }
 }

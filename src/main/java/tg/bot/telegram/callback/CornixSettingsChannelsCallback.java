@@ -1,5 +1,7 @@
 package tg.bot.telegram.callback;
 
+import static tg.bot.utils.CallbackData.*;
+
 import java.io.InputStream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import tg.bot.telegram.sender.TelegramSender;
 import tg.bot.user.User;
 import tg.bot.user.UserService;
-import tg.bot.utils.CallbackData;
 import tg.bot.utils.CornixSettingUtils;
-import static tg.bot.utils.CallbackData.*;
 
 @Component("CORNIX_SETTINGS_CHANNEL")
 @RequiredArgsConstructor
