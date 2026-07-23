@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tg.bot.telegram.client.TelegramBotClient;
+import tg.bot.telegram.callback.interfaces.TelegramBotClient;
 
 @Service
 @RequiredArgsConstructor

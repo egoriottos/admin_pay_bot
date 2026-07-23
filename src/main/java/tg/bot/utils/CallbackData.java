@@ -12,13 +12,6 @@ public final class CallbackData {
   public static final String REGISTER_CORNIX = "REGISTER_CORNIX";
   public static final String CORNIX_SETTINGS = "CORNIX_SETTINGS";
   public static final String HELP = "HELP";
-  public static final String CTI_PRO_SETTINGS = "CTI_PRO_SETTINGS";
-  public static final String ELITE_TREND_SETTINGS = "ELITE_TREND_SETTINGS";
-  public static final String TRADE_BE_SETTINGS = "TRADE_BE_SETTINGS";
-  public static final String SUBSCRIBE_CHANNEL = "SUBSCRIBE_CHANNEL";
-  public static final String CORNIX_SETTINGS_ELITE = "CORNIX_SETTINGS_ELITE";
-  public static final String CORNIX_SETTINGS_CTI = "CORNIX_SETTINGS_CTI";
-  public static final String CORNIX_SETTINGS_TRADE = "CORNIX_SETTINGS_TRADE";
   public static final String BUY_TARIFF = "BUY_TARIFF_";
   public static final String CORNIX_SETTINGS_WITHOUT_CODE = "CORNIX_SETTINGS_";
   public static final String EN = "LANG_EN";

@@ -1,4 +1,4 @@
-package tg.bot.telegram.callback;
+package tg.bot.telegram.callback.interfaces;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 

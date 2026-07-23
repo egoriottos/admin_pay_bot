@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import tg.bot.channel.Channel;
 import tg.bot.channel.ChannelService;
+import tg.bot.telegram.callback.interfaces.CallbackCommand;
 import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;

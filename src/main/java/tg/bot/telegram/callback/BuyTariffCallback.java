@@ -13,6 +13,7 @@ import tg.bot.payment.PaymentStatus;
 import tg.bot.payment.TryBitPaymentService;
 import tg.bot.tariff.Tariff;
 import tg.bot.tariff.TariffRepository;
+import tg.bot.telegram.callback.interfaces.CallbackCommand;
 import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;

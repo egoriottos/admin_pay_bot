@@ -5,6 +5,7 @@ import static tg.bot.utils.CallbackData.*;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import tg.bot.telegram.callback.interfaces.CallbackCommand;
 
 @Component
 public class CallbackHandler {

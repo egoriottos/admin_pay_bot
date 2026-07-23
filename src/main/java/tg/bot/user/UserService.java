@@ -10,6 +10,8 @@ import tg.bot.localization.LanguageResolver;
 public class UserService {
   private final UserRepository repository;
 
+  private static final String USER_NOT_FOUND = "User not found";
+
   public User getOrCreate(org.telegram.telegrambots.meta.api.objects.User tgUser) {
     User user = repository.findByTelegramId(tgUser.getId()).orElseGet(User::new);
 
@@ -26,7 +28,7 @@ public class UserService {
     User user =
         repository
             .findByTelegramId(telegramId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     user.setLanguage(lang);
     repository.save(user);
   }
@@ -34,6 +36,6 @@ public class UserService {
   public User findByTelegramId(Long telegramId) {
     return repository
         .findByTelegramId(telegramId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
   }
 }

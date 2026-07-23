@@ -22,9 +22,7 @@ import tg.bot.payment.Payment;
 import tg.bot.payment.PaymentConfirmationService;
 import tg.bot.payment.PaymentRepository;
 import tg.bot.payment.PaymentStatus;
-import tg.bot.subscription.SubscriptionRepository;
-import tg.bot.tariff.TariffRepository;
-import tg.bot.telegram.client.TelegramBotClient;
+import tg.bot.telegram.callback.interfaces.TelegramBotClient;
 import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
 import tg.bot.telegram.sender.TelegramSender;
@@ -37,8 +35,6 @@ public class TryBitWebhookController {
   private String secretKey;
 
   private final PaymentRepository paymentRepository;
-  private final SubscriptionRepository subscriptionRepository;
-  private final TariffRepository tariffRepository;
   private final MessageFactory messageFactory;
   private final TelegramSender sender;
   private final ObjectMapper objectMapper;
@@ -46,8 +42,8 @@ public class TryBitWebhookController {
   private final PaymentConfirmationService paymentConfirmationService;
   private final KeyboardFactory keyboardFactory;
 
-  // URL этого эндпоинта нужно указать в настройках проекта Trybit как "Notification URL",
-  // формат постбэка выбрать JSON.
+  public static final String ALGORITHM = "HmacSHA256";
+
   @PostMapping("/trybit/webhook")
   public ResponseEntity<Void> handle(@RequestBody String rawBody) {
     log.info("Trybit webhook received: {}", rawBody);
@@ -177,8 +173,8 @@ public class TryBitWebhookController {
   }
 
   private byte[] hmacSha256(String data, String secret) throws Exception {
-    Mac mac = Mac.getInstance("HmacSHA256");
-    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+    Mac mac = Mac.getInstance(ALGORITHM);
+    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), ALGORITHM));
     return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
   }
 

@@ -1,4 +1,4 @@
-package tg.bot.telegram.client;
+package tg.bot.telegram.callback.interfaces;
 
 import java.io.Serializable;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;

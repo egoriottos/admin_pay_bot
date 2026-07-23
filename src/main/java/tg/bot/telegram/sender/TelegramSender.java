@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tg.bot.telegram.client.TelegramBotClient;
+import tg.bot.telegram.callback.interfaces.TelegramBotClient;
 
 @Component
 @RequiredArgsConstructor
