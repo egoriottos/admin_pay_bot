@@ -22,6 +22,7 @@ import tg.bot.payment.Payment;
 import tg.bot.payment.PaymentConfirmationService;
 import tg.bot.payment.PaymentRepository;
 import tg.bot.payment.PaymentStatus;
+import tg.bot.subscription.SubscriptionService;
 import tg.bot.telegram.callback.interfaces.TelegramBotClient;
 import tg.bot.telegram.keyboard.KeyboardFactory;
 import tg.bot.telegram.message.MessageFactory;
@@ -97,7 +98,7 @@ public class TryBitWebhookController {
     PaymentConfirmationService.PaidResult result = paymentConfirmationService.confirm(payment);
 
     try {
-      String inviteLink = createTempInvite(result.channelChatId());
+      String inviteLink = createTempInviteLink(result.channelChatId());
       sender.editMessage(
           result.chatId(),
           result.messageId(),
@@ -129,11 +130,8 @@ public class TryBitWebhookController {
     return (v == null || v.isNull()) ? null : v.asText();
   }
 
-  private String createTempInvite(String chatId) throws TelegramApiException {
-    CreateChatInviteLink createInvite = new CreateChatInviteLink();
-    createInvite.setChatId(chatId);
-    createInvite.setMemberLimit(1);
-    createInvite.setExpireDate((int) (System.currentTimeMillis() / 1000 + 3600));
+  private String createTempInviteLink(String chatId) throws TelegramApiException {
+    CreateChatInviteLink createInvite = SubscriptionService.createInvite(chatId);
     ChatInviteLink link = telegramClient.execute(createInvite);
     return link.getInviteLink();
   }

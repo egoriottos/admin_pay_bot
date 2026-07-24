@@ -3,6 +3,7 @@ package tg.bot.subscription;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.CreateChatInviteLink;
 import tg.bot.user.User;
 
 @Service
@@ -18,5 +19,13 @@ public class SubscriptionService {
     } else {
       return userSubs;
     }
+  }
+
+  public static CreateChatInviteLink createInvite(String chatId) {
+    CreateChatInviteLink createInvite = new CreateChatInviteLink();
+    createInvite.setChatId(chatId);
+    createInvite.setMemberLimit(1);
+    createInvite.setExpireDate((int) (System.currentTimeMillis() / 1000 + 3600));
+    return createInvite;
   }
 }
