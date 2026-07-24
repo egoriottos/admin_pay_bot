@@ -12,4 +12,8 @@ public class TariffService {
   public List<Tariff> getByChannelCode(String code) {
     return tariffRepository.findByChannelCode(code);
   }
+
+  public Tariff getTariffByTariffId(Long tariffId) {
+    return tariffRepository.findTariffById(tariffId);
+  }
 }
