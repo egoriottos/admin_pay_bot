@@ -72,4 +72,17 @@ public class MessageFactory {
                     subscription.getExpireDate().format(DATE_FORMAT)))
         .collect(Collectors.joining("\n\n"));
   }
+
+  public String subscriptionsExpired(Language language, List<String> channelNames) {
+    String list = channelNames.stream().map(name -> "• " + name).collect(Collectors.joining("\n"));
+    return loc.get("subscriptions.expired", language, list);
+  }
+
+  public String subscriptionsExpiringSoon(Language language, List<Subscription> subscriptions) {
+    String list =
+        subscriptions.stream()
+            .map(s -> "• " + s.getChannel().getName() + " — " + s.getExpireDate().toLocalDate())
+            .collect(Collectors.joining("\n"));
+    return loc.get("subscriptions.expiring_soon", language, list);
+  }
 }

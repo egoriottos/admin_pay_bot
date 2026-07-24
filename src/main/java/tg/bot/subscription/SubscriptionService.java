@@ -51,4 +51,23 @@ public class SubscriptionService {
     createInvite.setExpireDate((int) (System.currentTimeMillis() / 1000 + 3600));
     return createInvite;
   }
+
+  public void saveAllSubscriptions(List<Subscription> subscriptions) {
+    subscriptionRepository.saveAll(subscriptions);
+  }
+
+  public void saveSubscription(Subscription subscription) {
+    subscriptionRepository.save(subscription);
+  }
+
+  public List<Subscription> findByExpireDateBeforeAndStatus(
+      LocalDateTime dateTime, SubscriptionStatus status) {
+    return subscriptionRepository.findByExpireDateBeforeAndStatus(dateTime, status);
+  }
+
+  public List<Subscription> findByExpireDateBetweenAndReminderSentFalseAndStatus(
+      LocalDateTime from, LocalDateTime to, SubscriptionStatus status) {
+    return subscriptionRepository.findByExpireDateBetweenAndReminderSentFalseAndStatus(
+        from, to, status);
+  }
 }

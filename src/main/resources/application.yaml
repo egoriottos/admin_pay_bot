@@ -28,3 +28,9 @@ trybit:
   secret-key: ${TRY_BIT_SECRET}
   api-token: ${TRY_BIT_API_TOKEN}
   shop-id: ${TRY_BIT_SHOP_ID}
+
+subscription:
+  reminder-days-before: ${REMINDER_DAYS_BEFORE}
+  cron:
+    check-expired: ${CHECK_EXPIRED}
+    reminder: ${REMINDER}
