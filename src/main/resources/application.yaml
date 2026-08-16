@@ -1,8 +1,5 @@
 server:
   port: ${SERVER_PORT}
-spring:
-  config:
-    import: file:.env[.properties]
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
