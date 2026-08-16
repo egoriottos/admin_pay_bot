@@ -9,8 +9,6 @@ build:
   #  копируем все файлы с расширением jar из папки target
   artifacts:
     target/*.jar: /
-  #    дополнительный параметр к команде mvn clean package
-  args: spring-boot:repackage
 run:
   #  путь до исполняемого файла
   jarName: bot-0.0.1-SNAPSHOT.jar
