@@ -11,11 +11,11 @@ import tg.bot.user.User;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
   List<Subscription> findByUserAndStatus(User user, SubscriptionStatus status);
 
-  @EntityGraph(attributePaths = "user")
+  @EntityGraph(attributePaths = {"user", "channel"})
   List<Subscription> findByExpireDateBeforeAndStatus(
       LocalDateTime dateTime, SubscriptionStatus status);
 
-  @EntityGraph(attributePaths = "user")
+  @EntityGraph(attributePaths = {"user","channel"})
   List<Subscription> findByExpireDateBetweenAndReminderSentFalseAndStatus(
       LocalDateTime from, LocalDateTime to, SubscriptionStatus status);
 }
