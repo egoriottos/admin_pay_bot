@@ -32,7 +32,7 @@ public class SubscriptionService {
     subscription.setTariff(tariff);
     subscription.setStatus(SubscriptionStatus.ACTIVE);
     subscription.setStartDate(creationDate);
-    subscription.setExpireDate(expirationDate.plusMonths(tariff.getMonths()));
+    subscription.setExpireDate(expirationDate);
     subscription.setReminderSent(reminderSent);
 
     subscriptionRepository.save(subscription);
