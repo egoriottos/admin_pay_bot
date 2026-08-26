@@ -24,7 +24,7 @@ public class HelpCallback implements CallbackCommand {
   public void handle(CallbackQuery query) {
     User user = userService.findByTelegramId(query.getFrom().getId());
 
-    sender.editMessage(
+    sender.editMessageHtml(
         query.getMessage().getChatId(),
         query.getMessage().getMessageId(),
         messageFactory.help(user.getLanguage()),

@@ -20,6 +20,7 @@ import tg.bot.telegram.callback.interfaces.TelegramBotClient;
 @RequiredArgsConstructor
 public class TelegramSender {
   private static final String MARKDOWN = "Markdown";
+  private static final String HTML = "HTML";
   private final TelegramBotClient telegramClient;
 
   public void sendMessage(Long chatId, String text, InlineKeyboardMarkup keyboard) {
@@ -37,7 +38,21 @@ public class TelegramSender {
   }
 
   public void editMessage(
-      Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
+          Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
+    editMessage(chatId, messageId, text, keyboard, MARKDOWN);
+  }
+
+  public void editMessageHtml(
+          Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
+    editMessage(chatId, messageId, text, keyboard, HTML);
+  }
+
+  private void editMessage(
+          Long chatId,
+          Integer messageId,
+          String text,
+          InlineKeyboardMarkup keyboard,
+          String parseMode) {
 
     EditMessageText edit = new EditMessageText();
 
@@ -45,7 +60,7 @@ public class TelegramSender {
     edit.setMessageId(messageId);
     edit.setText(text);
     edit.setReplyMarkup(keyboard);
-    edit.setParseMode(MARKDOWN);
+    edit.setParseMode(parseMode);
     try {
       telegramClient.execute(edit);
     } catch (TelegramApiException e) {
