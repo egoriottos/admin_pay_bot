@@ -38,21 +38,21 @@ public class TelegramSender {
   }
 
   public void editMessage(
-          Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
+      Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
     editMessage(chatId, messageId, text, keyboard, MARKDOWN);
   }
 
   public void editMessageHtml(
-          Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
+      Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard) {
     editMessage(chatId, messageId, text, keyboard, HTML);
   }
 
   private void editMessage(
-          Long chatId,
-          Integer messageId,
-          String text,
-          InlineKeyboardMarkup keyboard,
-          String parseMode) {
+      Long chatId,
+      Integer messageId,
+      String text,
+      InlineKeyboardMarkup keyboard,
+      String parseMode) {
 
     EditMessageText edit = new EditMessageText();
 

@@ -16,18 +16,18 @@ public class SubscriptionService {
   private final SubscriptionRepository subscriptionRepository;
 
   public Subscription createSubscription(
-          Payment payment,
-          Tariff tariff,
-          LocalDateTime creationDate,
-          LocalDateTime expirationDate,
-          boolean reminderSent) {
+      Payment payment,
+      Tariff tariff,
+      LocalDateTime creationDate,
+      LocalDateTime expirationDate,
+      boolean reminderSent) {
     User user = payment.getUser();
     Channel channel = tariff.getChannel();
 
     Subscription subscription =
-            subscriptionRepository
-                    .findByUserAndChannel(user, channel)
-                    .orElseGet(() -> Subscription.builder().user(user).channel(channel).build());
+        subscriptionRepository
+            .findByUserAndChannel(user, channel)
+            .orElseGet(() -> Subscription.builder().user(user).channel(channel).build());
 
     subscription.setTariff(tariff);
     subscription.setStatus(SubscriptionStatus.ACTIVE);

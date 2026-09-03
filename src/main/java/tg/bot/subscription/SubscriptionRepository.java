@@ -17,7 +17,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
   List<Subscription> findByExpireDateBeforeAndStatus(
       LocalDateTime dateTime, SubscriptionStatus status);
 
-  @EntityGraph(attributePaths = {"user","channel"})
+  @EntityGraph(attributePaths = {"user", "channel"})
   List<Subscription> findByExpireDateBetweenAndReminderSentFalseAndStatus(
       LocalDateTime from, LocalDateTime to, SubscriptionStatus status);
 
