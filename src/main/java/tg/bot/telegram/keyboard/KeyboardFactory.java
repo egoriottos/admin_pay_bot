@@ -138,7 +138,7 @@ public class KeyboardFactory {
           case 3 -> "tariff.month_3";
           case 6 -> "tariff.month_6";
           case 12 -> "tariff.year_1";
-          case 0 -> "tariff.forever";
+          case 1200 -> "tariff.forever";
           default ->
               throw new IllegalArgumentException(
                   "Unsupported tariff period: " + tariff.getMonths());
