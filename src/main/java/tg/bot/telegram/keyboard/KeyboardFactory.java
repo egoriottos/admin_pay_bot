@@ -44,7 +44,7 @@ public class KeyboardFactory {
   private List<List<InlineKeyboardButton>> mainMenuRows(Language language) {
     return List.of(
         row(button(language, "button.elite.trend", ELITE_TREND)),
-        row(button(language, "button.cti.pro", CTI_PRO)),
+        row(button(language, "button.endless.trade", ENDLESS_TRADE)),
         row(button(language, "button.trade.b.and.e", TRADE_BE)),
         row(button(language, "button.referral", REFERRAL)),
         row(button(language, "button.my.subs", MY_SUBS)),
@@ -123,7 +123,7 @@ public class KeyboardFactory {
     String key =
         switch (channel.getCode()) {
           case ELITE_TREND -> "button.elite.trend";
-          case CTI_PRO -> "button.cti.pro";
+          case ENDLESS_TRADE -> "button.cti.pro";
           case TRADE_BE -> "button.trade.b.and.e";
           default ->
               throw new IllegalArgumentException("Unsupported channel code: " + channel.getCode());

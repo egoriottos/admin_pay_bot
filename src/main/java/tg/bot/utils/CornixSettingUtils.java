@@ -12,7 +12,7 @@ public class CornixSettingUtils {
     String folder =
         switch (channelCode) {
           case ELITE_TREND -> "elite_trend";
-          case CTI_PRO -> "cti_pro";
+          case ENDLESS_TRADE -> "endless_trade";
           case TRADE_BE -> "trade_be";
           default -> throw new IllegalArgumentException("Unknown channel:" + channelCode);
         };

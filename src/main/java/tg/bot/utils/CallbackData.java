@@ -5,7 +5,7 @@ public final class CallbackData {
 
   public static final String ELITE_TREND = "ELITE_TREND";
   public static final String MAIN_MENU = "MAIN_MENU";
-  public static final String CTI_PRO = "CTI_PRO";
+  public static final String ENDLESS_TRADE = "ENDLESS_TRADE";
   public static final String TRADE_BE = "TRADE_BE";
   public static final String REFERRAL = "REFERRAL";
   public static final String MY_SUBS = "MY_SUBS";

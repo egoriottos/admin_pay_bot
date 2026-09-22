@@ -14,9 +14,9 @@ import tg.bot.user.User;
 import tg.bot.user.UserService;
 import tg.bot.utils.CallbackData;
 
-@Component("CTI_PRO")
+@Component("ENDLESS_TRADE")
 @RequiredArgsConstructor
-public class CtiProCallback implements CallbackCommand {
+public class EndlessTradeCallback implements CallbackCommand {
   private final UserService userService;
   private final TariffService tariffService;
   private final MessageFactory messageFactory;
@@ -26,7 +26,7 @@ public class CtiProCallback implements CallbackCommand {
   @Override
   public void handle(CallbackQuery query) {
     User user = userService.findByTelegramId(query.getFrom().getId());
-    List<Tariff> tariffs = tariffService.getByChannelCode(CallbackData.CTI_PRO);
+    List<Tariff> tariffs = tariffService.getByChannelCode(CallbackData.ENDLESS_TRADE);
     sender.editMessage(
         query.getMessage().getChatId(),
         query.getMessage().getMessageId(),
