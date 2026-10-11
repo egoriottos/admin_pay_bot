@@ -123,7 +123,7 @@ public class KeyboardFactory {
     String key =
         switch (channel.getCode()) {
           case ELITE_TREND -> "button.elite.trend";
-          case ENDLESS_TRADE -> "button.cti.pro";
+          case ENDLESS_TRADE -> "button.endless.trade";
           case TRADE_BE -> "button.trade.b.and.e";
           default ->
               throw new IllegalArgumentException("Unsupported channel code: " + channel.getCode());
