@@ -19,4 +19,5 @@ public final class CallbackData {
   public static final String LANG_ = "LANG_";
   public static final String LANG = "LANG";
   public static final String CORNIX_SETTINGS_CHANNEL = "CORNIX_SETTINGS_CHANNEL";
+  public static final String PRESSURE_TRADE = "PRESSURE_TRADE";
 }

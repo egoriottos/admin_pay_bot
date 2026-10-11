@@ -46,6 +46,7 @@ public class KeyboardFactory {
         row(button(language, "button.elite.trend", ELITE_TREND)),
         row(button(language, "button.endless.trade", ENDLESS_TRADE)),
         row(button(language, "button.trade.b.and.e", TRADE_BE)),
+        row(button(language, "button.pressure.trade", PRESSURE_TRADE)),
         row(button(language, "button.referral", REFERRAL)),
         row(button(language, "button.my.subs", MY_SUBS)),
         row(button(language, "button.registration.cornix", REGISTER_CORNIX)),
@@ -87,6 +88,9 @@ public class KeyboardFactory {
   public InlineKeyboardMarkup channelsCornixSettings(Language language, List<Channel> channels) {
     List<List<InlineKeyboardButton>> rows =
         channels.stream()
+            .filter(
+                channel ->
+                    !PRESSURE_TRADE.equals(channel.getCode())) // у Pressure trade нет настроек
             .map(channel -> row(channelButton(language, channel)))
             .collect(Collectors.toList());
     rows.add(row(button(language, "button.back", MAIN_MENU)));
